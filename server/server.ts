@@ -1,7 +1,7 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import sessionMiddleware from './modules/session-middleware';
-import passport from './strategies/user.strategy';
+// import passport from './strategies/user.strategy';
 import userRouter from './routes/user.router';
 // import eventRouter from './routes/event.router';
 // import notesRouter from './routes/notes.router';
@@ -26,8 +26,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(sessionMiddleware);
 
 // start up passport sessions
-app.use(passport.initialize());
-app.use(passport.session());
+// app.use(passport.initialize());
+// app.use(passport.session());
 
 /* Routes */
 app.use('/api/user', userRouter);

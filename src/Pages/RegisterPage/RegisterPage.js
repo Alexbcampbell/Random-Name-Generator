@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import mapStoreToProps from '../../redux/mapStoreToProps';
 
 // CUSTOM COMPONENTS
-import RegisterForm from '../RegisterForm/RegisterForm';
+import RegisterForm from '../../components/RegisterForm/RegisterForm';
 
 class RegisterPage extends Component {
   state = {
