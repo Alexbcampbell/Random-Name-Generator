@@ -17,32 +17,16 @@ router.post(
   (req: Request, res: Response, next: express.NextFunction): void => {
     const username: string = <string>req.body.username;
     const password: string = encryptPassword(req.body.password);
-    const registered_first_name: string = <string>req.body.first_name;
-    const registered_middle_name: string = <string>req.body.middle_name;
-    const registered_last_name: string = <string>req.body.last_name;
     const firstName: string = <string>req.body.first_name;
     const middleName: string = <string>req.body.middle_name;
     const lastName: string = <string>req.body.last_name;
     const email: string = <string>req.body.email;
-    const company: string = <string>req.body.company;
-    const jobTitle: string = <string>req.body.job_title;
-    const motivationBio: string = <string>req.body.motivation_bio;
-    const experienceBio: string = <string>req.body.experience_bio;
-    const customSkills: string = <string>req.body.custom_entry_skills;
-    const skills: Array<number> = req.body.skills;
-    const timeSlot: Array<number> = req.body.time_slot;
-    const educationLevel: number = req.body.education_level;
-    const ethnicity: number = req.body.ethnicity;
-    const backgroundCheck: boolean = req.body.background_check_permission;
-    const gender: number = parseInt(req.body.gender);
     const zipCode: number = parseInt(req.body.zip_code);
     let newUserId: number;
 
     const queryOne: string = `INSERT INTO "user" (username, password,  first_name, middle_name,
-      last_name, ethnicity, company, job_title, motivation_bio, experience_bio, custom_entry_skills,
-      background_check_permission, gender, zip_code, access_level,
-      email, registered_first_name, registered_middle_name, registered_last_name, volunteer_role, highest_education_level) 
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20,$21) RETURNING id;`;
+      last_name, email, zipCode) 
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id;`;
     pool
       .query(queryOne, [
         username,
@@ -50,43 +34,12 @@ router.post(
         firstName,
         middleName,
         lastName,
-        ethnicity,
-        company,
-        jobTitle,
-        motivationBio,
-        experienceBio,
-        customSkills,
-        backgroundCheck,
-        gender,
         zipCode,
         1,
         email,
-        registered_first_name,
-        registered_middle_name,
-        registered_last_name,
-        1,
-        educationLevel,
       ])
       .then((result) => {
-        newUserId = parseInt(result.rows[0].id);
-        let userPromises: Array<Promise<any>> = [];
-        for (let index = 0; index < skills.length; index++) {
-          let element: number = skills[index];
-          let query: string = `INSERT INTO "user_skills" (user_id, skills_id) VALUES ($1, $2)`;
-          userPromises.push(pool.query(query, [newUserId, element]));
-        }
-        for (let index = 0; index < timeSlot.length; index++) {
-          let element: number = timeSlot[index];
-          let query: string = `INSERT INTO "user_time_slot" (user_id, time_slot_id) VALUES ($1, $2)`;
-          userPromises.push(pool.query(query, [newUserId, element]));
-        }
-        Promise.all(userPromises)
-          .then(() => {
-            res.sendStatus(200);
-          })
-          .catch(() => {
-            res.sendStatus(500);
-          });
+        res.sendStatus(200);
       })
       .catch((error) => {
         console.log(error);
@@ -95,63 +48,6 @@ router.post(
   }
 );
 //making minor change for merge issue
-
-router.put(
-  '/update',
-  (req: any, res: Response, next: express.NextFunction): void => {
-    //TODO GET THE IMAGE LINK!
-    // const image: string = <string>req.body.image_link;
-    console.log(req.body);
-    const first_name: string = <string>req.body.first_name;
-    const last_name: string = <string>req.body.last_name;
-    const skills: Array<number> = req.body.skills;
-    const phone_number: string = <string>req.body.phone_number;
-    const email: string = <string>req.body.email;
-    const zipCode: number = parseInt(req.body.zip_code);
-    const userId: number = req.user.id;
-
-    const queryOne: string = `UPDATE "user" SET first_name = $1, last_name = $2, zip_code = $3, phone_number = $4, email = $5 WHERE id = $6;`;
-    const queryArray: [string, string, number, string, string, number] = [
-      first_name,
-      last_name,
-      zipCode,
-      phone_number,
-      email,
-      userId,
-    ];
-    pool
-      .query(queryOne, queryArray)
-      .then((result) => {
-        let userPromises: Array<Promise<any>> = [];
-        for (let index = 0; index < skills.length; index++) {
-          let element: number = skills[index];
-          let query: string = `INSERT INTO "user_skills" (user_id, skills_id) VALUES ($1, $2)`;
-          userPromises.push(pool.query(query, [userId, element]));
-        }
-        // for (let index = 0; index < timeSlot.length; index++) {
-        //   let element: number = timeSlot[index];
-        //   let query: string = `INSERT INTO "user_time_slot" (user_id, time_slot_id) VALUES ($1, $2)`;
-        //   userPromises.push(pool.query(query, [userId, element]));
-        // }
-        // for (let index = 0; index < educationLevel.length; index++) {
-        //   let element: number = educationLevel[index];
-        //   let query: string = `INSERT INTO "user_education_level" (user_id, education_level) VALUES ($1, $2)`;
-        //   userPromises.push(pool.query(query, [userId, element]));
-        // }
-        Promise.all(userPromises)
-          .then(() => {
-            res.sendStatus(200);
-          })
-          .catch(() => {
-            res.sendStatus(500);
-          });
-      })
-      .catch((error) => {
-        console.log(error);
-        res.sendStatus(500);
-      });
-  }
-);
 
 router.post(
   '/login',
