@@ -18,6 +18,12 @@ class RaffleForm extends Component {
     },
   };
 
+  handleInputChange = (propName) => (event) => {
+    this.setState({
+      [propName]: event.target.value,
+    });
+  };
+
   render() {
     return (
       <div>
