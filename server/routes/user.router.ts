@@ -9,7 +9,7 @@ import { promises } from 'dns';
 const router: express.Router = express.Router();
 
 router.get('/', rejectUnauthenticated, (req: Request, res: Response): void => {
-  res.send(req.user);
+  res.send(req.body);
 });
 
 router.post(
@@ -49,17 +49,17 @@ router.post(
 );
 //making minor change for merge issue
 
-router.post(
-  '/login',
-  userStrategy.authenticate('local'),
-  (req: Request, res: Response): void => {
-    res.sendStatus(200);
-  }
-);
+// router.post(
+//   '/login',
+//   userStrategy.authenticate('local'),
+//   (req: Request, res: Response): void => {
+//     res.sendStatus(200);
+//   }
+// );
 
-router.post('/logout', (req: Request, res: Response): void => {
-  req.logout();
-  res.sendStatus(200);
-});
+// router.post('/logout', (req: Request, res: Response): void => {
+//   req.logout();
+//   res.sendStatus(200);
+// });
 
 export default router;
